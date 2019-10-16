@@ -1,6 +1,6 @@
 package com.amadeus
 
-object Spark101 extends App {
+object Scala101 extends App {
   // hello world
   println("Hello first Scala")
 
