@@ -29,16 +29,15 @@ object Spark102 {
     dataFrame.filter(dataFrame.col("meslek").isNull).show()
 
     // creating a new column and removing the existing one
-    dataFrame.withColumn("meslek_filled", F.when(dataFrame.col("meslek").isNull, value = "Unknown")
+    val trimmedData = dataFrame.withColumn("meslek_filled", F.when(dataFrame.col("meslek").isNull, value = "Others")
       .otherwise(dataFrame.col("meslek")))
       .drop("meslek")
-      .show()
 
     // group by of data frame
-    dataFrame.groupBy("meslek")
+    trimmedData.groupBy("meslek_filled")
       .agg(F.mean("aylik_gelir").as("avg_salary"))
       .orderBy(F.desc("avg_salary"))
-      .show()
+        .show()
 
     // the most earned city
     dataFrame.groupBy("sehir")
