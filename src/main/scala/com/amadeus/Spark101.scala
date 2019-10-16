@@ -36,8 +36,16 @@ object Spark101 extends App {
 
   println(" ")
 
-  // converting to uppercase char
-  textFile.map(x => x.toUpperCase)
+  // converting to uppercase char. it directly maps the each item one by one. it does no change the structure of the underlying structure.
+  textFile.map(_.toUpperCase)
     .take(5)
+    .foreach(println)
+
+  println(" ")
+
+  // flatMap example. it changes the underlying structure of data. we cant do this using pure map function
+  // if line contains blank character, flatMap helps us to remove those characters.
+  // it applies operation on each single character
+  textFile.flatMap(_.split(" "))
     .foreach(println)
 }
