@@ -28,21 +28,24 @@ object Spark102 {
 
     dataFrame.filter(dataFrame.col("meslek").isNull).show()
 
+    // the most earned city
+    dataFrame.groupBy("sehir")
+      .agg(F.sum("aylik_gelir").as("monthly_income"))
+      .orderBy(F.desc("monthly_income"))
+      .show(1)
+
     // creating a new column and removing the existing one
     val trimmedData = dataFrame.withColumn("meslek_filled", F.when(dataFrame.col("meslek").isNull, value = "Others")
       .otherwise(dataFrame.col("meslek")))
       .drop("meslek")
 
     // group by of data frame
-    trimmedData.groupBy("meslek_filled")
+    val averageSalary = trimmedData.groupBy("meslek_filled")
       .agg(F.mean("aylik_gelir").as("avg_salary"))
       .orderBy(F.desc("avg_salary"))
-        .show()
 
-    // the most earned city
-    dataFrame.groupBy("sehir")
-      .agg(F.sum("aylik_gelir").as("monthly_income"))
-      .orderBy(F.desc("monthly_income"))
-      .show(1)
+    averageSalary.withColumn("avg_salary_formatted",
+      F.format_number(averageSalary.col("avg_salary"), 2))
+      .show()
   }
 }
