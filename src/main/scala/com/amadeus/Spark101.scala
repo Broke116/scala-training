@@ -3,6 +3,8 @@ package com.amadeus
 import org.apache.spark.sql.SparkSession
 import org.apache.log4j.{Logger, Level}
 
+/* RDD */
+
 object Spark101 extends App {
   Logger.getLogger("org").setLevel(Level.ERROR)
 
