@@ -1,7 +1,6 @@
 package com.amadeus
 
-import com.amadeus.Spark101.sc
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SparkSession, functions => F}
 import org.apache.log4j.{Level, Logger}
 
 /* high level api data frame*/
@@ -23,5 +22,28 @@ object Spark102 {
     dataFrame.show(5) // we can specify the number of rows in which we would like to read it from file
 
     dataFrame.printSchema()
+
+    // salaries which are greater than 4000
+    dataFrame.filter(dataFrame.col("aylik_gelir").gt(4000)).show()
+
+    dataFrame.filter(dataFrame.col("meslek").isNull).show()
+
+    // creating a new column and removing the existing one
+    dataFrame.withColumn("meslek_filled", F.when(dataFrame.col("meslek").isNull, value = "Unknown")
+      .otherwise(dataFrame.col("meslek")))
+      .drop("meslek")
+      .show()
+
+    // group by of data frame
+    dataFrame.groupBy("meslek")
+      .agg(F.mean("aylik_gelir").as("avg_salary"))
+      .orderBy(F.desc("avg_salary"))
+      .show()
+
+    // the most earned city
+    dataFrame.groupBy("sehir")
+      .agg(F.sum("aylik_gelir").as("monthly_income"))
+      .orderBy(F.desc("monthly_income"))
+      .show(1)
   }
 }
